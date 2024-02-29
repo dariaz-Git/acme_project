@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'birthday.apps.BirthdayConfig',
     'pages.apps.PagesConfig',
     'django_bootstrap5',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,8 @@ TEMPLATES = [
     },
 ]
 
+MEDIA_ROOT = BASE_DIR / 'media'
+
 WSGI_APPLICATION = 'acme_project.wsgi.application'
 
 DATABASES = {
@@ -80,7 +83,7 @@ TIME_ZONE = 'Etc/GMT-3'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
