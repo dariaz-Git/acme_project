@@ -1,4 +1,5 @@
 from django.db import models as m
+from django.urls import reverse
 
 from .validators import real_age
 
@@ -21,6 +22,8 @@ class Birthday(m.Model):
             ),
         )
 
+    def get_absolute_url(self):
+        return reverse("birthday:detail", kwargs={"pk": self.pk})
 
 # from django.core.validators import MinValueValidator, MaxValueValidator
 # price = m.IntegerField(validators=[MaxValueValidator(100),
