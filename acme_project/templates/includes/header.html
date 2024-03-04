@@ -21,6 +21,24 @@
               Список дней рождения
             </a>
           </li>
+          {% if user.is_authenticated %}  
+            <!--Для авторизованного-->
+            <span class="navbar-text">Пользователь: <b>{{ user.username }}</b></span>        
+            <li class="nav-item">
+              <a class="nav-link {% if view_name == 'password_change' %} active {% endif %}"
+                href="{% url 'password_change' %}">Изменить пароль</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if view_name == 'logout' %} active {% endif %}"
+                href="{% url 'logout' %}">Выйти</a>
+            </li>
+          {% else %}
+            <!--Для не авторизованного-->
+            <li class="nav-item">
+              <a class="nav-link{% if view_name == 'login' %} active {% endif %}"
+                href="{% url 'login' %}">Войти</a>
+            </li>
+          {% endif %}
         </ul>
       {% endwith %}
     </div>
