@@ -10,3 +10,5 @@ urlpatterns = [
     path('auth/registration/', include('users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'core.views.page_not_found'

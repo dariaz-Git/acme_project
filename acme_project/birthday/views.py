@@ -1,4 +1,6 @@
-# from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404  # redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 from django.views.generic import (
     CreateView, DeleteView, DetailView, ListView, UpdateView)
 
@@ -13,19 +15,42 @@ class BirthdayListView(ListView):
     paginate_by = 10
 
 
-class BirthdayCreateView(CreateView):
+class BirthdayCreateView(LoginRequiredMixin, CreateView):
     model = Birthday
     form_class = BirthdayForm
 
+    def form_valid(self, form):
+        """Сохряняет имя автора в БД"""
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-class BirthdayUpdateView(UpdateView):
+
+class BirthdayUpdateView(LoginRequiredMixin, UpdateView):
     model = Birthday
     form_class = BirthdayForm
 
+    def dispatch(self, request, *args, **kwargs):
+        """Проверяет право пользователя на редактирование записи"""
+        instance = get_object_or_404(
+            Birthday, pk=kwargs['pk'], author=request.user
+        )
+        if instance.author != request.user:
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
 
-class BirthdayDeleteView(DeleteView):
+
+class BirthdayDeleteView(LoginRequiredMixin, DeleteView):
+    """Удаляет запись из БД"""
     model = Birthday
-    pass
+
+    def dispatch(self, request, *args, **kwargs):
+        """Проверяет право пользователя на удаление записи"""
+        instanse = get_object_or_404(
+            Birthday, pk=kwargs['pk'], author=request.user
+        )
+        if instanse.author != request.user:
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
 
 
 class BirthdayDetailView(DetailView):

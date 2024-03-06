@@ -1,7 +1,11 @@
+from django.contrib.auth import get_user_model
 from django.db import models as m
 from django.urls import reverse
 
 from .validators import real_age
+
+
+User = get_user_model()
 
 
 class Birthday(m.Model):
@@ -13,6 +17,9 @@ class Birthday(m.Model):
         'Фото',
         upload_to='birthdays_images',
         blank=True)
+    author = m.ForeignKey(
+        User, verbose_name='Автор записи', on_delete=m.CASCADE, null=True
+    )
 
     class Meta():
         constraints = (
