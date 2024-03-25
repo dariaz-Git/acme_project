@@ -8,11 +8,24 @@ from .validators import real_age
 User = get_user_model()
 
 
+class Tag(m.Model):
+    tag = m.CharField('Тег', max_length=20)
+
+    def __str__(self):
+        return self.tag
+
+
 class Birthday(m.Model):
     first_name = m.CharField('Имя', max_length=20)
     last_name = m.CharField(
         'Фамилия', blank=True, help_text='Необязательное поле', max_length=20)
     birthday = m.DateField('Дата рождения', validators=(real_age,))
+    tags = m.ManyToManyField(
+        Tag,
+        verbose_name='Теги',
+        blank=True,
+        help_text='Удерживайте Ctrl для выбора нескольких вариантов'
+    )
     image = m.ImageField(
         'Фото',
         upload_to='birthdays_images',
@@ -32,6 +45,16 @@ class Birthday(m.Model):
     def get_absolute_url(self):
         return reverse("birthday:detail", kwargs={"pk": self.pk})
 
-# from django.core.validators import MinValueValidator, MaxValueValidator
-# price = m.IntegerField(validators=[MaxValueValidator(100),
-    # MinValueValidator(1)])
+
+class Congratulation(m.Model):
+    text = m.TextField('Текст поздравления')
+    birthday = m.ForeignKey(
+        Birthday,
+        on_delete=m.CASCADE,
+        related_name='congratulations',
+    )
+    created_at = m.DateField(auto_now_add=True)
+    author = m.ForeignKey(User, on_delete=m.CASCADE)
+
+    class Meta:
+        ordering = ('created_at',)
